@@ -14,7 +14,7 @@ import tassist.address.model.person.Person;
 /**
  * Deletes a person identified using it's displayed index from the address book.
  */
-public class DeleteCommand extends Command {
+public class DeleteCommand extends Command implements ConfirmableCommand {
 
     public static final String COMMAND_WORD = "delete";
 
@@ -24,6 +24,8 @@ public class DeleteCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    public static final String MESSAGE_CONFIRM_DELETE = "Are you sure you want to delete: %s? (Y/N)";
+    public static final String MESSAGE_DELETE_CANCELLED = "Deletion cancelled.";
 
     private final Index targetIndex;
 
@@ -41,9 +43,29 @@ public class DeleteCommand extends Command {
         }
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
+
+        return new CommandResult(String.format(MESSAGE_CONFIRM_DELETE, Messages.format(personToDelete)), this);
+    }
+
+    @Override
+    public CommandResult executeConfirmed(Model model) {
+        requireNonNull(model);
+        List<Person> lastShownList = model.getFilteredPersonList();
+
+        if (targetIndex.getZeroBased() >= lastShownList.size()) {
+            return new CommandResult(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+
+        Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
         model.deletePerson(personToDelete);
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
+
+    @Override
+    public String getConfirmationMessage() {
+        return MESSAGE_CONFIRM_DELETE;
+    }
+
 
     @Override
     public boolean equals(Object other) {

@@ -19,6 +19,8 @@ public class CommandResult {
     /** The application should exit. */
     private final boolean exit;
 
+    private final ConfirmableCommand pendingConfirmation;
+
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
@@ -26,6 +28,17 @@ public class CommandResult {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
+        this.pendingConfirmation = null; // No confirmation required
+    }
+
+    /**
+     * Constructs a {@code CommandResult} that requires confirmation before execution.
+     */
+    public CommandResult(String feedbackToUser, ConfirmableCommand pendingConfirmation) {
+        this.feedbackToUser = requireNonNull(feedbackToUser);
+        this.showHelp = false;
+        this.exit = false;
+        this.pendingConfirmation = pendingConfirmation;
     }
 
     /**
@@ -38,6 +51,14 @@ public class CommandResult {
 
     public String getFeedbackToUser() {
         return feedbackToUser;
+    }
+
+    public boolean requiresConfirmation() {
+        return pendingConfirmation != null;
+    }
+
+    public ConfirmableCommand getPendingConfirmation() {
+        return pendingConfirmation;
     }
 
     public boolean isShowHelp() {
@@ -54,29 +75,29 @@ public class CommandResult {
             return true;
         }
 
-        // instanceof handles nulls
         if (!(other instanceof CommandResult)) {
             return false;
         }
 
         CommandResult otherCommandResult = (CommandResult) other;
         return feedbackToUser.equals(otherCommandResult.feedbackToUser)
-                && showHelp == otherCommandResult.showHelp
-                && exit == otherCommandResult.exit;
+                       && showHelp == otherCommandResult.showHelp
+                       && exit == otherCommandResult.exit
+                       && Objects.equals(pendingConfirmation, otherCommandResult.pendingConfirmation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackToUser, showHelp, exit);
+        return Objects.hash(feedbackToUser, showHelp, exit, pendingConfirmation);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("feedbackToUser", feedbackToUser)
-                .add("showHelp", showHelp)
-                .add("exit", exit)
-                .toString();
+                       .add("feedbackToUser", feedbackToUser)
+                       .add("showHelp", showHelp)
+                       .add("exit", exit)
+                       .add("requiresConfirmation", requiresConfirmation())
+                       .toString();
     }
-
 }

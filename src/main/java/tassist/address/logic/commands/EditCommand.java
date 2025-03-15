@@ -22,6 +22,7 @@ import tassist.address.logic.Messages;
 import tassist.address.logic.commands.exceptions.CommandException;
 import tassist.address.model.Model;
 import tassist.address.model.person.Address;
+import tassist.address.model.person.ClassNumber;
 import tassist.address.model.person.Email;
 import tassist.address.model.person.Name;
 import tassist.address.model.person.Person;
@@ -99,9 +100,10 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
+        ClassNumber updatedClassNumber = editPersonDescriptor.getClassNumber().orElse(personToEdit.getClassNumber());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedClassNumber, updatedTags);
     }
 
     @Override
@@ -137,6 +139,7 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Address address;
+        private ClassNumber classNumber;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -150,6 +153,7 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
+            setClassNumber(toCopy.classNumber);
             setTags(toCopy.tags);
         }
 
@@ -190,6 +194,14 @@ public class EditCommand extends Command {
 
         public Optional<Address> getAddress() {
             return Optional.ofNullable(address);
+        }
+
+        public void setClassNumber(ClassNumber classNumber) {
+            this.classNumber = classNumber;
+        }
+
+        public Optional<ClassNumber> getClassNumber() {
+            return Optional.ofNullable(classNumber);
         }
 
         /**

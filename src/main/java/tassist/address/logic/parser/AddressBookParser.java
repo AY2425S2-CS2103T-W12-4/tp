@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import tassist.address.commons.core.LogsCenter;
 import tassist.address.logic.commands.AddCommand;
+import tassist.address.logic.commands.ClassCommand;
 import tassist.address.logic.commands.ClearCommand;
 import tassist.address.logic.commands.Command;
 import tassist.address.logic.commands.DeleteCommand;
@@ -55,6 +56,9 @@ public class AddressBookParser {
 
         case AddCommand.COMMAND_WORD:
             return new AddCommandParser().parse(arguments);
+
+        case ClassCommand.COMMAND_WORD:
+            return new ClassCommandParser().parse(arguments);
 
         case EditCommand.COMMAND_WORD:
             return new EditCommandParser().parse(arguments);

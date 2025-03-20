@@ -3,14 +3,14 @@ package tassist.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static tassist.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.util.List;
+import java.util.Optional;
 
-import tassist.address.commons.core.index.Index;
 import tassist.address.logic.Messages;
 import tassist.address.logic.commands.exceptions.CommandException;
 import tassist.address.model.Model;
 import tassist.address.model.person.Github;
 import tassist.address.model.person.Person;
+import tassist.address.model.person.StudentId;
 
 /**
  * Changes the github of an existing person in the address book.
@@ -32,37 +32,37 @@ public class GithubCommand extends Command {
     public static final String MESSAGE_INVALID_GITHUB =
             "Invalid GitHub URL! The correct format is: https://github.com/{username}";
 
-    private final Index index;
+    private final StudentId studentId;
     private final Github github;
 
     /**
-     * @param index of person
+     * @param studentId of person
      * @param github of the person to be updated to
      */
-    public GithubCommand(Index index, Github github) {
-        requireNonNull(index);
+    public GithubCommand(StudentId studentId, Github github) {
+        requireNonNull(studentId);
         requireNonNull(github);
 
-        this.index = index;
+        this.studentId = studentId;
         this.github = github;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownList = model.getFilteredPersonList();
+        Optional<Person> personToEdit = model.getFilteredPersonList().stream().filter(
+                person -> person.getStudentId().equals(studentId)).findFirst();
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        if (personToEdit.isEmpty()) {
+            throw new CommandException(Messages.MESSAGE_PERSON_NOT_FOUND + studentId);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = new Person(
-                personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
-                personToEdit.getAddress(), personToEdit.getStudentId(),
-                github, personToEdit.getTags(), personToEdit.getProgress());
+                personToEdit.get().getName(), personToEdit.get().getPhone(), personToEdit.get().getEmail(),
+                personToEdit.get().getAddress(), personToEdit.get().getStudentId(),
+                github, personToEdit.get().getTags(), personToEdit.get().getProgress());
 
-        model.setPerson(personToEdit, editedPerson);
+        model.setPerson(personToEdit.get(), editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         return new CommandResult(generateSuccessMessage(editedPerson));
@@ -90,7 +90,7 @@ public class GithubCommand extends Command {
         }
 
         GithubCommand e = (GithubCommand) other;
-        return index.equals(e.index)
+        return studentId.equals(e.studentId)
                 && github.equals(e.github);
     }
 

@@ -5,21 +5,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tassist.address.logic.commands.CommandTestUtil.VALID_GITHUB_AMY;
 import static tassist.address.logic.commands.CommandTestUtil.VALID_GITHUB_BOB;
+import static tassist.address.logic.commands.CommandTestUtil.VALID_STUDENTID_AMY;
+import static tassist.address.logic.commands.CommandTestUtil.VALID_STUDENTID_BOB;
 import static tassist.address.logic.commands.CommandTestUtil.assertCommandFailure;
-import static tassist.address.logic.commands.CommandTestUtil.showPersonAtIndex;
-import static tassist.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static tassist.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static tassist.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 
-import tassist.address.commons.core.index.Index;
 import tassist.address.logic.Messages;
 import tassist.address.model.Model;
 import tassist.address.model.ModelManager;
 import tassist.address.model.UserPrefs;
 import tassist.address.model.person.Github;
 import tassist.address.model.person.Person;
+import tassist.address.model.person.StudentId;
 import tassist.address.testutil.PersonBuilder;
 
 
@@ -34,52 +33,42 @@ public class GithubCommandTest {
     @Test
     public void execute_validGithubUrl_success() throws Exception {
         Model model = new ModelManager();
-        Person originalPerson = new PersonBuilder().withName("Alice").build();
+
+        Person originalPerson = new PersonBuilder().withName("Alice").withStudentId("A1239878D").build();
         model.addPerson(originalPerson);
 
-        Index validIndex = Index.fromZeroBased(0);
+        StudentId validStudentId = new StudentId("A1239878D");
         Github validGithub = new Github("https://github.com/alice123");
 
-        GithubCommand githubCommand = new GithubCommand(validIndex, validGithub);
+        GithubCommand githubCommand = new GithubCommand(validStudentId, validGithub);
 
         CommandResult result = githubCommand.execute(model);
 
-        Person editedPerson = model.getFilteredPersonList().get(0);
+        Person editedPerson = model.getFilteredPersonList().stream().filter(
+                person -> person.getStudentId().equals(validStudentId)).findFirst().get();
+
         assertEquals(validGithub, editedPerson.getGithub()); // Assert GitHub was updated
         assertEquals(String.format(GithubCommand.MESSAGE_ADD_GITHUB_SUCCESS, Messages.format(editedPerson)),
                 result.getFeedbackToUser()); // Assert success message
     }
 
     @Test
-    public void execute_invalidPersonIndexUnfilteredList_failure() {
-        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
-        GithubCommand githubCommand = new GithubCommand(outOfBoundIndex, new Github(VALID_GITHUB_BOB));
+    public void execute_invalidPersonStudentIdUnfilteredList_failure() {
+        StudentId invalidStudentId = new StudentId("A9999999A");
+        GithubCommand githubCommand = new GithubCommand(invalidStudentId, new Github(VALID_GITHUB_BOB));
 
-        assertCommandFailure(githubCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-    }
-
-    /**
-     * Edit filtered list where index is larger than size of filtered list,
-     * but smaller than size of address book
-     */
-    @Test
-    public void execute_invalidPersonIndexFilteredList_failure() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        Index outOfBoundIndex = INDEX_SECOND_PERSON;
-        // ensures that outOfBoundIndex is still in bounds of address book list
-        assertTrue(outOfBoundIndex.getZeroBased() < model.getAddressBook().getPersonList().size());
-
-        GithubCommand githubCommand = new GithubCommand(outOfBoundIndex, new Github(VALID_GITHUB_BOB));
-
-        assertCommandFailure(githubCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        assertCommandFailure(githubCommand, model,
+                Messages.MESSAGE_PERSON_NOT_FOUND + invalidStudentId);
     }
 
     @Test
     public void equals() {
-        final GithubCommand standardCommand = new GithubCommand(INDEX_FIRST_PERSON, new Github(VALID_GITHUB_AMY));
+        final GithubCommand standardCommand = new GithubCommand(
+                new StudentId(VALID_STUDENTID_AMY), new Github(VALID_GITHUB_AMY));
 
         // same values -> returns true
-        GithubCommand commandWithSameValues = new GithubCommand(INDEX_FIRST_PERSON, new Github(VALID_GITHUB_AMY));
+        GithubCommand commandWithSameValues = new GithubCommand(
+                new StudentId(VALID_STUDENTID_AMY), new Github(VALID_GITHUB_AMY));
         assertTrue(standardCommand.equals(commandWithSameValues));
 
         // same object -> returns true
@@ -92,9 +81,11 @@ public class GithubCommandTest {
         assertFalse(standardCommand.equals(new ClearCommand()));
 
         // different index -> returns false
-        assertFalse(standardCommand.equals(new GithubCommand(INDEX_SECOND_PERSON, new Github(VALID_GITHUB_AMY))));
+        assertFalse(standardCommand.equals(new GithubCommand(
+                new StudentId(VALID_STUDENTID_BOB), new Github(VALID_GITHUB_AMY))));
 
         // different github -> returns false
-        assertFalse(standardCommand.equals(new GithubCommand(INDEX_FIRST_PERSON, new Github(VALID_GITHUB_BOB))));
+        assertFalse(standardCommand.equals(
+                new GithubCommand(new StudentId(VALID_STUDENTID_AMY), new Github(VALID_GITHUB_BOB))));
     }
 }

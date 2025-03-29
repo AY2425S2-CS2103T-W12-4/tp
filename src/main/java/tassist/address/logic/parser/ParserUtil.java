@@ -2,6 +2,8 @@ package tassist.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -186,6 +188,21 @@ public class ParserUtil {
             throw new ParseException(Progress.MESSAGE_CONSTRAINTS);
         }
         return new Progress(trimmedProgress);
+    }
 
+    /**
+     * Parses a {@code String filePath} into a {@code Path}.
+     * Leading and trailing whitespaces will be trimmed.
+     */
+    public static Path parseFilePath(String filePath) {
+        requireNonNull(filePath);
+        String trimmedFilePath = filePath.trim();
+
+        Path path = Paths.get(trimmedFilePath);
+        if (path.isAbsolute()) {
+            return path;
+        } else {
+            return path.toAbsolutePath();
+        }
     }
 }

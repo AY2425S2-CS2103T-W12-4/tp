@@ -18,6 +18,7 @@ public class CliSyntax {
     public static final Prefix PREFIX_ORDER = new Prefix("o/");
     public static final Prefix PREFIX_FILTER = new Prefix("f/");
     public static final Prefix PREFIX_FILTER_VALUE = new Prefix("fv/");
+    public static final Prefix PREFIX_FILE_PATH = new Prefix("fp/");
     public static final Prefix PREFIX_DATE = new Prefix("d/");
     public static final Prefix PREFIX_PROJECT_TEAM = new Prefix("pt/");
 }

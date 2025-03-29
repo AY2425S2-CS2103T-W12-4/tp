@@ -56,6 +56,7 @@ TAssist is a **desktop application** for Teaching Assistants (TAs) to easily tra
    TAssist provides a calendar-style view to help you visualize upcoming assignments and timed events. Events are grouped and displayed by their due dates, along with the list of students assigned to each.
     * Press the F3 key to open the calendar-style event viewer.
     * Display includes: Assignment names, Event type (e.g., assignment), Assigned students, Dates grouped chronologically
+    * An empty calendar will be shown if there are no current Assignments.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -104,7 +105,7 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL s/STUDENT_ID [g/GITHUB_URL] [pt/TEAM]
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com s/A0000000B pt/ProjectTeam1 c/T01 t/friends t/owesMoney pr/50`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com s/A0123456U g/https://github.com/betsy p/1234567 t/criminal`
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com s/A0123456U g/https://github.com/betsy p/1234567 t/LifeScienceMajor`
 
 ### Listing all students : `list`
 
@@ -116,13 +117,13 @@ All parameters are optional. Filters and sorting can be used together or indepen
 #### Filter Options
 `FILTER_TYPE:`<br>
 * progress: Filters students whose progress is less than or equal to the provided value. 
+* team: Filters by existing team names.
 * course: (Not yet implemented) Will filter by existing course codes.
-* team: (Not yet implemented) Will filter by existing team names.
 
 `FILTER_VALUE:`<br>
-* PROGRESS: an integer between 0 and 100. 
+* PROGRESS: an integer between 0 and 100.
+* TEAM: must match an existing team name. 
 * COURSE: (Not yet implemented) must match an existing course value.
-* TEAM: (Not yet implemented) must match an existing team value.
 
 #### Sort Options
 `SORT_TYPE:`<br>
@@ -143,6 +144,8 @@ Examples:
   Displays all students, sorted by Github username in ascending lexicographical order.
 * `list f/progress fv/50 s/name o/des`<br>
   Displays students with progress ≤ 50, sorted by name in descending lexicographical order.
+* `list f/team fv/Bang Bang`<br>
+  Displays students with the Team name 'Bang Bang', matched case-insensitively.
 
 ### Editing a student : `edit`
 
@@ -167,12 +170,12 @@ Examples:
 
 Finds students whose names contain any of the given keywords, or whose student ID matches exactly.
 
-Format: `find KEYWORD [MORE_KEYWORDS]` or `find STUDENT_ID`
+Format: `find NAME [MORE_NAMES]` or `find STUDENT_ID`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
+* The order of the names does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only full words will be matched e.g. `Han` will not match `Hans`
-* Students matching at least one keyword will be returned (i.e. `OR` search).
+* Students matching at least one name will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 * If a valid student ID is entered (e.g. `A1234567B`), it will return the student with an exact match on that ID.
 
@@ -335,7 +338,7 @@ If your changes to the data file makes its format invalid, TAssist will discard 
 Furthermore, certain edits can cause TAssist to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
-### Archiving data files `[coming in v1.4]`
+### Archiving data files `[coming in v1.5]`
 
 _Details coming soon ..._
 

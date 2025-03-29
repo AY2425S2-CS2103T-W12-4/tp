@@ -27,6 +27,7 @@ public class ProjectTeamTest {
         // invalid name
         assertFalse(ProjectTeam.isValidProjectTeam("")); // empty string
         assertFalse(ProjectTeam.isValidProjectTeam(" ")); // a whitespace
+        assertFalse(ProjectTeam.isValidProjectTeam("  ")); // double whitespace
 
         // valid name
         assertTrue(ProjectTeam.isValidProjectTeam("weatl")); // all alphabets

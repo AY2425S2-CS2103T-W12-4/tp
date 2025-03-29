@@ -14,6 +14,7 @@ box Model MODEL_COLOR_T1
 participant "m:Model" as Model MODEL_COLOR
 end box
 
+/'First Interaction - Confirmation Request'/
 [-> LogicManager : execute("delete 1")
 activate LogicManager
 
@@ -49,22 +50,56 @@ deactivate AddressBookParser
 LogicManager -> DeleteCommand : execute(m)
 activate DeleteCommand
 
-DeleteCommand -> Model : deletePerson(1)
-activate Model
-
-Model --> DeleteCommand
-deactivate Model
-
 create CommandResult
-DeleteCommand -> CommandResult
+DeleteCommand -> CommandResult : new(confirmMessage, this)
 activate CommandResult
 
-CommandResult --> DeleteCommand
+CommandResult --> DeleteCommand : r
 deactivate CommandResult
 
 DeleteCommand --> LogicManager : r
 deactivate DeleteCommand
 
-[<--LogicManager
+LogicManager -> CommandResult : getPendingConfirmation()
+activate CommandResult
+
+CommandResult --> LogicManager : d
+deactivate CommandResult
+
+[<--LogicManager : r
 deactivate LogicManager
+
+/'Second Interaction - After Confirmation'/
+[-> LogicManager : execute(commandText)
+activate LogicManager
+
+alt commandText == "Y"
+    LogicManager -> DeleteCommand : executeConfirmed(m)
+    activate DeleteCommand
+
+    DeleteCommand -> Model : deletePerson(personToDelete)
+    activate Model
+    Model --> DeleteCommand
+    deactivate Model
+
+    create CommandResult
+    DeleteCommand -> CommandResult : new(successMessage)
+    activate CommandResult
+    CommandResult --> DeleteCommand : r
+    deactivate CommandResult
+
+    DeleteCommand --> LogicManager : r
+    deactivate DeleteCommand
+
+else commandText == "N"
+    create CommandResult
+    LogicManager -> CommandResult : new("Action cancelled.")
+    activate CommandResult
+    CommandResult --> LogicManager : r
+    deactivate CommandResult
+end
+
+[<--LogicManager : r
+deactivate LogicManager
+
 @enduml

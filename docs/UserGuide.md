@@ -5,8 +5,36 @@ title: User Guide
 
 TAssist is a **desktop application** for Teaching Assistants (TAs) from NUS School of Computing to easily track and manage student information. It is optimized for use via a **Command Line Interface** (CLI), complemented by a user-friendly Graphical User Interface (GUI). If you can type fast, TAssist helps you complete student management tasks more quickly than traditional GUI-based apps.
 
-* Table of Contents
-{:toc}
+## 📑 Table of Contents
+
+- [Quick Start](#quick-start)
+- [Tips](#tips)
+- [Features](#features)
+    - [Viewing Help: `help`](#viewing-help--help)
+    - [Adding a Student: `add`](#adding-a-student--add)
+    - [Listing, Filtering and Sorting Students: `list`](#listing-filtering-and-sorting-students--list)
+    - [Editing a Student: `edit`](#editing-a-student--edit)
+    - [Locating Student(s): `find`](#locating-students-by-name-studentid-or-class-find)
+    - [Assigning or Removing Class: `class`](#assigning-or-removing-a-tutorial-class-class)
+    - [Updating Repository: `repo`](#updating-a-students-repository-link-repo)
+    - [Updating Progress: `progress`](#updating-a-students-progress-value-progress)
+    - [Updating GitHub Link: `github`](#updating-a-students-github-link-github)
+    - [Opening GitHub Page: `open`](#opening-a-students-github-page-open)
+    - [Adding an Assignment/Event: `assignment`](#adding-a-new-assignmenttimed-event-assignment)
+    - [Viewing Events: `view`](#viewing-the-timed-event-list-view)
+    - [Assigning an Event: `assign`](#assigning-a-timed-eventassignment-assign)
+    - [Unassigning & Deleting Event: `unassign`](#unassigning-and-removing-a-timed-event-unassign)
+    - [Importing Data: `import`](#importing-data--import)
+    - [Exporting Data: `export`](#exporting-data--export)
+    - [Deleting a Student: `delete`](#deleting-a-student--delete)
+    - [Clearing All Students: `clear`](#clearing-all-entries--clear)
+    - [Exiting the App: `exit`](#exiting-the-program--exit)
+- [Saving the Data](#saving-the-data)
+- [Editing the Data File](#editing-the-data-file)
+- [Parameters](#parameters)
+- [FAQ](#faq)
+- [Known Issues](#known-issues)
+- [Command Summary](#command-summary)
 
 --------------------------------------------------------------------------------------------------------------------
 ## Quick start

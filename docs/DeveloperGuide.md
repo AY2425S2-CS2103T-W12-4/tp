@@ -14,6 +14,7 @@ title: Developer Guide
 * JavaFX components and UI structure were inspired by SE-EDU’s JavaFX tutorials.
 * The GitHub repo parsing logic was inspired by open-source regex patterns from [gist.github.com](https://gist.github.com/).
 * JSON storage mechanism concept inspired by SE-EDU’s Storage guide in AddressBook-Level3.
+* This project uses the [OpenCSV](https://opencsv.sourceforge.net/) library. 
 
 --------------------------------------------------------------------------------------------------------------------
 
